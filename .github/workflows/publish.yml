@@ -5,9 +5,6 @@ on:
     tags:
       - "v*"
 
-env:
-  DOTNET_VERSION: "6"
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -17,7 +14,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6
+          dotnet-version: 6.0.x
 
       - name: Install dependencies
         run: dotnet restore
@@ -32,9 +29,11 @@ jobs:
 
       - name: Publish
         run: |
-          dotnet publish /p:PublishProfile=.\Properties\PublishProfiles\FolderProfile.pubxml
+          mkdir /tmp/build
+          dotnet publish /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml --output /tmp/build
 
       - name: Attach files to Github releases
         uses: softprops/action-gh-release@v1
         with:
-          files: "bin/Release/net6.0-windows/publish/win-x64/*.exe"
+          files: "/tmp/build/*.exe"
+          fail_on_unmatched_files: true
