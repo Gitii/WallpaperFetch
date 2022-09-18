@@ -30,7 +30,7 @@ jobs:
       - name: Publish
         run: |
           mkdir /tmp/build
-          dotnet publish /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml --output /tmp/build
+          dotnet build -c Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile --output /tmp/build
 
       - name: Attach files to Github releases
         uses: softprops/action-gh-release@v1
