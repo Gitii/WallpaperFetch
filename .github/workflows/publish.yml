@@ -29,9 +29,11 @@ jobs:
 
       - name: Publish
         run: |
-          dotnet publish /p:PublishProfile=.\Properties\PublishProfiles\FolderProfile.pubxml
+          mkdir /build
+          dotnet publish /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml --output /build
 
       - name: Attach files to Github releases
         uses: softprops/action-gh-release@v1
         with:
-          files: "bin/Release/net6.0-windows/publish/win-x64/*.exe"
+          files: "/build/*.exe"
+          fail_on_unmatched_files: true
