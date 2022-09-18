@@ -29,11 +29,11 @@ jobs:
 
       - name: Publish
         run: |
-          mkdir /build
-          dotnet publish /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml --output /build
+          mkdir /tmp/build
+          dotnet publish /p:PublishProfile=./Properties/PublishProfiles/FolderProfile.pubxml --output /tmp/build
 
       - name: Attach files to Github releases
         uses: softprops/action-gh-release@v1
         with:
-          files: "/build/*.exe"
+          files: "/tmp/build/*.exe"
           fail_on_unmatched_files: true
