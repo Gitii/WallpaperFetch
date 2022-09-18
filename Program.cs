@@ -91,7 +91,7 @@ internal class Program
         return source.Type switch
         {
             GithubSource.DiscriminatorValue => new GithubImageSourceHandler(),
-            _ => throw new Exception($"Unknown source '{source.Name}'")
+            _ => throw new Exception($"Unknown source '{source.Type}' ({source.Name})")
         };
     }
 }
