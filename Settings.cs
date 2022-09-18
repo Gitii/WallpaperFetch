@@ -10,7 +10,8 @@ namespace WallpaperFetch;
 
 class Settings
 {
-    [JsonPropertyName("$schema")] public string? SchemaPath { get; set; } = null;
+    [JsonPropertyName("$schema")]
+    public string? SchemaPath { get; set; } = null;
 
     public List<ImageSource> Sources { get; set; } = new List<ImageSource>();
 
@@ -20,10 +21,8 @@ class Settings
 
     public static Settings LoadFromFile(string path)
     {
-        return JsonSerializer.Deserialize<Settings>(
-            File.ReadAllText(path),
-            GetSerializerSettings()
-        ) ?? throw new Exception("Failed to deserialize settings");
+        return JsonSerializer.Deserialize<Settings>(File.ReadAllText(path), GetSerializerSettings())
+            ?? throw new Exception("Failed to deserialize settings");
     }
 
     private static JsonSerializerOptions GetSerializerSettings()
@@ -59,7 +58,10 @@ class Settings
             {
                 new GithubSource()
                 {
-                    RepositoryName = "makccr/wallpapers", BasePath = "wallpapers", Name = "makccr"
+                    RepositoryName = "makccr/wallpapers",
+                    BasePath = "wallpapers",
+                    Name = "makccr",
+                    Type = GithubSource.DiscriminatorValue
                 }
             },
             DefaultSourceName = "makccr",
@@ -67,15 +69,12 @@ class Settings
             SchemaPath = schemaFilePath
         };
 
-        File.WriteAllText(
-            path,
-            JsonSerializer.Serialize(defaultSettings, GetSerializerSettings())
-        );
+        File.WriteAllText(path, JsonSerializer.Serialize(defaultSettings, GetSerializerSettings()));
     }
 
     public ImageSource GetSourceByName(string sourceName)
     {
         return Sources.FirstOrDefault((s) => s.Name == sourceName)
-               ?? throw new Exception($"A source with name '{sourceName}' doesn't exist.");
+            ?? throw new Exception($"A source with name '{sourceName}' doesn't exist.");
     }
 }
