@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Install cron": {
+      "commandName": "Project",
+      "commandLineArgs": "cron --install",
+      "nativeDebugging": true
+    },
+    "Set wallpaper using defaults": {
+      "commandName": "Project",
+      "commandLineArgs": "set",
+      "nativeDebugging": true
+    }
+  }
+}
