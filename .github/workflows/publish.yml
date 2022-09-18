@@ -1,0 +1,40 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  DOTNET_VERSION: "6"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: |
+          dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: |
+          dotnet test --no-restore --verbosity normal
+
+      - name: Publish
+        run: |
+          dotnet publish /p:PublishProfile=.\Properties\PublishProfiles\FolderProfile.pubxml
+
+      - name: Attach files to Github releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "bin/Release/net6.0-windows/publish/win-x64/*.exe"

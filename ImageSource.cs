@@ -5,7 +5,8 @@ namespace WallpaperFetch;
 
 class ImageSource
 {
-    [JsonPropertyName("$type")] public string? Type { get; set; }
+    [JsonPropertyName("$type")]
+    public string? Type { get; set; }
 
     [JsonRequired(RequirementPolicy.Always)]
     public string Name { get; set; } = String.Empty;

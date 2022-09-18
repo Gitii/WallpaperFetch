@@ -6,74 +6,76 @@ using Json.Schema;
 using Json.Schema.Generation;
 using WallpaperFetch.Github;
 
-namespace WallpaperFetch
+namespace WallpaperFetch;
+
+class Settings
 {
-    class Settings
+    [JsonPropertyName("$schema")] public string? SchemaPath { get; set; } = null;
+
+    public List<ImageSource> Sources { get; set; } = new List<ImageSource>();
+
+    public string? DefaultSourceName { get; set; }
+
+    public string? DefaultCategory { get; set; }
+
+    public static Settings LoadFromFile(string path)
     {
-        [JsonPropertyName("$schema")] public string? SchemaPath { get; set; } = null;
+        return JsonSerializer.Deserialize<Settings>(
+            File.ReadAllText(path),
+            GetSerializerSettings()
+        ) ?? throw new Exception("Failed to deserialize settings");
+    }
 
-        public List<ImageSource> Sources { get; set; } = new List<ImageSource>();
-
-        public string? DefaultSourceName { get; set; }
-
-        public string? DefaultCategory { get; set; }
-
-        public static Settings LoadFromFile(string path)
+    private static JsonSerializerOptions GetSerializerSettings()
+    {
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web)
         {
-            return JsonSerializer.Deserialize<Settings>(File.ReadAllText(path), GetSerializerSettings()) ??
-                   throw new Exception("Failed to deserialize settings");
-        }
+            MaxDepth = 0,
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            WriteIndented = true,
+        };
+        options.SetupExtensions();
 
-        private static JsonSerializerOptions GetSerializerSettings()
+        DiscriminatorConventionRegistry registry = options.GetDiscriminatorConventionRegistry();
+        registry.ClearConventions();
+        registry.RegisterConvention(new DefaultDiscriminatorConvention<string>(options));
+        registry.RegisterType<GithubSource>();
+        return options;
+    }
+
+    public static void SaveSchema(string path)
+    {
+        var schema = new JsonSchemaBuilder().FromType<Settings>().Build();
+
+        File.WriteAllText(path, JsonSerializer.Serialize(schema));
+    }
+
+    public static void SaveScaffold(string path, string? schemaFilePath)
+    {
+        var defaultSettings = new Settings
         {
-            var options = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            Sources = new List<ImageSource>
             {
-                MaxDepth = 0,
-                AllowTrailingCommas = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                WriteIndented = true,
-            };
-            options.SetupExtensions();
-
-            DiscriminatorConventionRegistry registry = options.GetDiscriminatorConventionRegistry();
-            registry.ClearConventions();
-            registry.RegisterConvention(new DefaultDiscriminatorConvention<string>(options));
-            registry.RegisterType<GithubSource>();
-            return options;
-        }
-
-        public static void SaveSchema(string path)
-        {
-            var schema = new JsonSchemaBuilder().FromType<Settings>().Build();
-
-            File.WriteAllText(path, JsonSerializer.Serialize(schema));
-        }
-
-        public static void SaveScaffold(string path, string? schemaFilePath)
-        {
-            var defaultSettings = new Settings
-            {
-                Sources = new List<ImageSource>
+                new GithubSource()
                 {
-                    new GithubSource()
-                    {
-                        RepositoryName = "makccr/wallpapers",
-                        BasePath = "wallpapers",
-                        Name = "makccr"
-                    }
-                },
-                DefaultSourceName = "makccr",
-                DefaultCategory = "space",
-                SchemaPath = schemaFilePath
-            };
+                    RepositoryName = "makccr/wallpapers", BasePath = "wallpapers", Name = "makccr"
+                }
+            },
+            DefaultSourceName = "makccr",
+            DefaultCategory = "space",
+            SchemaPath = schemaFilePath
+        };
 
-            File.WriteAllText(path, JsonSerializer.Serialize(defaultSettings, GetSerializerSettings()));
-        }
+        File.WriteAllText(
+            path,
+            JsonSerializer.Serialize(defaultSettings, GetSerializerSettings())
+        );
+    }
 
-        public ImageSource GetSourceByName(string sourceName)
-        {
-            return Sources.FirstOrDefault((s) => s.Name == sourceName) ??
-                   throw new Exception($"A source with name '{sourceName}' doesn't exist.");
-        }
+    public ImageSource GetSourceByName(string sourceName)
+    {
+        return Sources.FirstOrDefault((s) => s.Name == sourceName)
+               ?? throw new Exception($"A source with name '{sourceName}' doesn't exist.");
     }
 }
