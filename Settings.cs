@@ -19,6 +19,8 @@ class Settings
 
     public string? DefaultCategory { get; set; }
 
+    public int MaxHistoryLength { get; set; } = 5;
+
     public static Settings LoadFromFile(string path)
     {
         return JsonSerializer.Deserialize<Settings>(File.ReadAllText(path), GetSerializerSettings())
