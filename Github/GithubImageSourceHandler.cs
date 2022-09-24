@@ -17,7 +17,11 @@ class GithubImageSourceHandler : IImageSourceHandler
         var url =
             $"https://api.github.com/repos/{source.RepositoryName}/git/trees/master?recursive=1";
 
-        var wallpapers = await GetWallpapersAsync(url, source.BasePath, category)
+        var wallpapers = await GetWallpapersAsync(
+                url,
+                source.BasePath,
+                source.IgnoreCategory ? null : category
+            )
             .ConfigureAwait(false);
 
         var selectedWallpaper = string.IsNullOrWhiteSpace(imageName)
@@ -30,7 +34,7 @@ class GithubImageSourceHandler : IImageSourceHandler
     static async Task<IReadOnlyList<WallpaperImage>> GetWallpapersAsync(
         string url,
         string basePath,
-        string category
+        string? category
     )
     {
         using var client = new HttpClient();
@@ -40,7 +44,9 @@ class GithubImageSourceHandler : IImageSourceHandler
             await client.GetFromJsonAsync<Response>(url).ConfigureAwait(false)
             ?? new Response() { tree = Array.Empty<BlobReference>() };
 
-        var namePrefix = $"{basePath}/{category}/";
+        var namePrefix = string.IsNullOrWhiteSpace(category)
+          ? $"{basePath}/"
+          : $"{basePath}/{category}/";
 
         return response.tree
             .Where(
@@ -53,7 +59,7 @@ class GithubImageSourceHandler : IImageSourceHandler
                     new WallpaperImage()
                     {
                         BlobContent = new Uri(b.url),
-                        Category = category,
+                        Category = category ?? "",
                         Name = b.path.Substring(namePrefix.Length)
                     }
             )

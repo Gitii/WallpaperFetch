@@ -10,4 +10,6 @@ class GithubSource : ImageSource
     public string RepositoryName { get; set; } = String.Empty;
 
     public string BasePath { get; set; } = String.Empty;
+
+    public bool IgnoreCategory { get; set; } = false;
 }
