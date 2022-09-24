@@ -79,6 +79,8 @@ internal class Program
             .GetImageAsync(source, selectedCategory, imageName)
             .ConfigureAwait(false);
 
+        history.Cleanup(settings.MaxHistoryLength);
+
         await history.SaveAsync(imageData).ConfigureAwait(false);
 
         await Wallpaper

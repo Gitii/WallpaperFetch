@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using System.Collections.Immutable;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 
 namespace WallpaperFetch;
@@ -41,5 +42,36 @@ class History
                 }
             )
             .ConfigureAwait(false);
+    }
+
+    public void Cleanup(int maxHistoryLength)
+    {
+        var files = Directory
+            .GetFiles(_historyFolder)
+            .OrderByDescending(ToSortValue)
+            .Skip(maxHistoryLength)
+            .ToImmutableList();
+
+        foreach (var file in files)
+        {
+            File.Delete(file);
+        }
+    }
+
+    private int ToSortValue(string path)
+    {
+        var dateString = Path.GetFileNameWithoutExtension(path);
+
+        if (dateString == null)
+        {
+            throw new Exception($"invalid file path: {path}");
+        }
+
+        if (DateOnly.TryParse(dateString, out var date))
+        {
+            return date.Year * 1000 + date.DayOfYear;
+        }
+
+        throw new Exception($"invalid file name: not a valid DateOnly: {dateString}");
     }
 }
