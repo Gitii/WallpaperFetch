@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -29,11 +29,11 @@ jobs:
 
       - name: Publish
         run: |
-          mkdir /tmp/build
-          dotnet publish /p:Configuration=Release /p:PublishSingleFile=true /p:PublishReadyToRun=true -r win-x64 --self-contained --output /tmp/build
+          mkdir C:/build
+          dotnet publish /p:Configuration=Release /p:PublishSingleFile=true /p:PublishReadyToRun=true -r win-x64 --self-contained --output C:/build
 
       - name: Attach files to Github releases
         uses: softprops/action-gh-release@v1
         with:
-          files: "/tmp/build/*.exe"
+          files: "C:/build/*.exe"
           fail_on_unmatched_files: true
