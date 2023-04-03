@@ -25,8 +25,8 @@ class GithubImageSourceHandler : IImageSourceHandler
             .ConfigureAwait(false);
 
         var selectedWallpaper = string.IsNullOrWhiteSpace(imageName)
-          ? wallpapers[Random.Shared.Next(wallpapers.Count)]
-          : wallpapers.Single((w) => w.Name == imageName);
+            ? wallpapers[Random.Shared.Next(wallpapers.Count)]
+            : wallpapers.Single((w) => w.Name == imageName);
 
         return await GetBlobContentAsync(selectedWallpaper.BlobContent).ConfigureAwait(false);
     }
@@ -45,8 +45,8 @@ class GithubImageSourceHandler : IImageSourceHandler
             ?? new Response() { tree = Array.Empty<BlobReference>() };
 
         var namePrefix = string.IsNullOrWhiteSpace(category)
-          ? $"{basePath}/"
-          : $"{basePath}/{category}/";
+            ? $"{basePath}/"
+            : $"{basePath}/{category}/";
 
         return response.tree
             .Where(

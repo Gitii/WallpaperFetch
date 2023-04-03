@@ -20,7 +20,10 @@ class Cron
 
         td.Triggers.Add(new DailyTrigger() { StartBoundary = DateTime.Today.AddHours(9) });
         td.Triggers.Add(
-            new LogonTrigger() { UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name }
+            new LogonTrigger()
+            {
+                UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+            }
         );
 
         // Create an action that will launch Notepad whenever the trigger fires

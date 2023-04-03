@@ -83,9 +83,7 @@ internal class Program
 
         await history.SaveAsync(imageData).ConfigureAwait(false);
 
-        await Wallpaper
-            .SetLockScreenWallpaperAsync(imageData)
-            .ConfigureAwait(false);
+        await Wallpaper.SetLockScreenWallpaperAsync(imageData).ConfigureAwait(false);
 
         await Wallpaper
             .SetDesktopWallpaperAsync(imageData, Wallpaper.Style.Fill)

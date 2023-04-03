@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 
 namespace WallpaperFetch;
@@ -60,12 +59,9 @@ class History
 
     private int ToSortValue(string path)
     {
-        var dateString = Path.GetFileNameWithoutExtension(path);
-
-        if (dateString == null)
-        {
-            throw new Exception($"invalid file path: {path}");
-        }
+        var dateString =
+            Path.GetFileNameWithoutExtension(path)
+            ?? throw new Exception($"invalid file path: {path}");
 
         if (DateOnly.TryParse(dateString, out var date))
         {
