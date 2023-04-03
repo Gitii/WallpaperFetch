@@ -79,22 +79,25 @@ public static class Wallpaper
         return new Size(optimalWidth, optimalHeight);
     }
 
-
     private static async Task<Size> GetMaxMonitorResolutionAsync()
     {
         const string DEVICE_INSTANCE_ID = "System.Devices.DeviceInstanceId";
-        var displayInformationList = await DeviceInformation.FindAllAsync(DisplayMonitor.GetDeviceSelector(), new[]
-        {
-            DEVICE_INSTANCE_ID
-        });
+        var displayInformationList = await DeviceInformation.FindAllAsync(
+            DisplayMonitor.GetDeviceSelector(),
+            new[] { DEVICE_INSTANCE_ID }
+        );
 
         var size = Size.Empty;
 
-        foreach (var deviceInformation in displayInformationList.Where((di) =>
-                     di.Kind == DeviceInformationKind.DeviceInterface))
+        foreach (
+            var deviceInformation in displayInformationList.Where(
+                (di) => di.Kind == DeviceInformationKind.DeviceInterface
+            )
+        )
         {
-            DisplayMonitor monitor = await
-                DisplayMonitor.FromIdAsync((string)deviceInformation.Properties[DEVICE_INSTANCE_ID]);
+            DisplayMonitor monitor = await DisplayMonitor.FromIdAsync(
+                (string)deviceInformation.Properties[DEVICE_INSTANCE_ID]
+            );
 
             var monitorSize = monitor.NativeResolutionInRawPixels;
             if (monitorSize.Height > size.Height || monitorSize.Width > size.Width)

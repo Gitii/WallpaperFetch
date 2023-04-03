@@ -61,7 +61,7 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+# artifacts/
 
 # StyleCop
 StyleCopReport.xml
@@ -114,9 +114,6 @@ ipch/
 *.vsp
 *.vspx
 *.sap
-
-# Visual Studio Trace Files
-*.e2e
 
 # TFS 2012 Local Workspace
 $tf/
@@ -173,7 +170,7 @@ publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
-*.azurePubxml
+*.azurePubxmld
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
@@ -205,7 +202,6 @@ rcf/
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
-Package.StoreAssociation.xml
 _pkginfo.txt
 *.appx
 *.appxbundle
